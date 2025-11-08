@@ -6,12 +6,13 @@ import { useRouter } from 'next/navigation'
 export default function HomePage() {
   const router = useRouter()
   const [user, setUser] = useState<{ id?: number; email?: string } | null>(null)
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'
 
   useEffect(() => {
     const check = async () => {
       try {
         // Cookie-based token will be sent automatically when credentials: 'include' is set
-        const res = await fetch('http://localhost:4000/api/me', {
+        const res = await fetch(`${API_BASE}/api/me`, {
           credentials: 'include',
         })
 
@@ -34,7 +35,7 @@ export default function HomePage() {
   function handleLogout() {
     const doLogout = async () => {
       try {
-        await fetch('http://localhost:4000/api/logout', { method: 'POST', credentials: 'include' })
+  await fetch(`${API_BASE}/api/logout`, { method: 'POST', credentials: 'include' })
       } catch (e) {
         console.error('Logout failed', e)
       }

@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: app
+    env: node
+    branch: master
+    plan: free
+    # Single-service monorepo build: install deps and build the Next frontend, then install backend deps
+    buildCommand: "npm ci && npm run build && cd backend && npm ci"
+    # Start both processes in one container. Backend will listen on port 4000, frontend (Next) will listen on the Render-assigned $PORT.
+    startCommand: "npm run start"
+    instanceType: "starter"
+    healthCheckPath: "/"
+
+# Notes:
+# - Set environment variables in the Render dashboard for the service:
+#   - DATABASE_URL (recommended) or DB_HOST/DB_PORT/DB_NAME/DB_USER/DB_PASS
+#   - JWT_SECRET
+#   - DB_SSL=true (if your DB requires TLS)
+#   - NEXT_PUBLIC_API_URL should be set to http://localhost:4000 so the frontend proxies API calls to the local backend process inside the same container
+# - Alternatively, deploy using Docker with two separate services.

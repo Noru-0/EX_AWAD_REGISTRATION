@@ -111,6 +111,28 @@ curl -i -b cookies.txt http://localhost:4000/api/me
 - React Query v5 API
   - This project uses `@tanstack/react-query` v5. Code uses v5 `useMutation({ mutationFn })` and mutation `status` values like `pending` / `error` / `success`.
 
+## Deploying to Render
+
+This repository includes a `render.yaml` manifest to deploy both the frontend and backend as separate Render services.
+
+- Link your Git repository in the Render dashboard and enable the `render.yaml` manifest.
+- The manifest will create two web services: `frontend` (Next.js) and `backend` (Express).
+
+Required environment variables (set these in the Render dashboard for each service):
+
+- Backend service:
+  - `DATABASE_URL` (preferred) or `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASS`
+  - `JWT_SECRET` (secure random value)
+  - `DB_SSL=true` if your database requires TLS
+  - `FRONTEND_ORIGIN` set to your frontend URL (e.g. `https://<frontend>.onrender.com`)
+
+- Frontend service:
+  - `NEXT_PUBLIC_API_URL` set to your backend public URL (e.g. `https://<backend>.onrender.com`)
+
+After setting the env vars and deploying, Render will build the frontend (`cd frontend && npm run build`) and start it (`cd frontend && npm run start`), and install/run the backend (`cd backend && npm run start`).
+
+Important: do NOT commit secrets to the repo. Use Render's environment variable settings to inject secrets at deploy time.
+
 ## Development notes & next improvements
 
 - Consider strengthening validation (password complexity, rate limiting).
@@ -122,6 +144,20 @@ curl -i -b cookies.txt http://localhost:4000/api/me
 If you want, I can:
 - Run a quick end-to-end smoke test from this environment (register -> login -> /api/me).
 - Add tests or CI config to run these flows automatically.
+
+Single-container deploy on Render
+--------------------------------
+
+This repository now supports deploying both frontend and backend in a single Render service. Key notes:
+
+- The root-level `package.json` contains a `start` script which runs the backend on internal port `4000` and starts the Next.js frontend on the Render-assigned `$PORT`.
+- When using the single-service approach set `NEXT_PUBLIC_API_URL` in Render to `http://localhost:4000` so the frontend will call the locally-running backend inside the same container.
+- Build and start are handled by the included `render.yaml` manifest which has been updated for a single-service flow.
+
+Security / production notes:
+
+- Use `DATABASE_URL` or DB_* env vars and `JWT_SECRET` in Render's environment settings. Avoid committing secrets into the repo.
+- If your DB requires TLS, set `DB_SSL=true` in Render env; for testing you may set `DB_SSL_REJECT_UNAUTHORIZED=false` (not recommended for production).
 
 
 ---

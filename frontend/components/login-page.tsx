@@ -17,6 +17,7 @@ const carouselImages = [
 ]
 
 export function LoginPage({ onSwitch }: { onSwitch?: (page: 'login' | 'register') => void }) {
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'
   type FormValues = { email: string; password: string }
   const { register, handleSubmit, formState: { errors } } = useForm<FormValues>()
   const [showPassword, setShowPassword] = useState(false)
@@ -25,7 +26,7 @@ export function LoginPage({ onSwitch }: { onSwitch?: (page: 'login' | 'register'
   const router = useRouter()
   const mutation = useMutation({
     mutationFn: async (vals: FormValues) => {
-      const res = await fetch('http://localhost:4000/api/login', {
+  const res = await fetch(`${API_BASE}/api/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

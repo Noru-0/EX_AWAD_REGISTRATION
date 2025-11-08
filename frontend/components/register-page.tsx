@@ -20,13 +20,14 @@ export function RegisterPage({ onSwitch }: { onSwitch?: (page: 'login' | 'regist
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
   const router = useRouter()
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'
 
   type FormValues = { email: string; password: string; confirm: string }
   const { register, handleSubmit, watch, formState: { errors } } = useForm<FormValues>({ mode: 'onTouched' })
 
   const mutation = useMutation({
     mutationFn: async (payload: { email: string; password: string }) => {
-      const res = await fetch('http://localhost:4000/user/register', {
+  const res = await fetch(`${API_BASE}/user/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

@@ -1,0 +1,13 @@
+{
+  "name": "auth-monorepo-runner",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "install:all": "(cd frontend && npm ci) && (cd backend && npm ci)",
+    "build": "cd frontend && npm ci && npm run build",
+    "start": "concurrently \"cd backend && PORT=4000 npm start\" \"cd frontend && npm run start -p $PORT\""
+  },
+  "dependencies": {
+    "concurrently": "^8.2.0"
+  }
+}
