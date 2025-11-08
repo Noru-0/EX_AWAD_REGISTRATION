@@ -44,7 +44,8 @@ export function RegisterPage({ onSwitch }: { onSwitch?: (page: 'login' | 'regist
     try {
       await mutation.mutateAsync({ email: data.email, password: data.password })
       if (onSwitch) onSwitch('login')
-      router.push('/home')
+      // After successful registration, send user to the login page and do NOT auto-login.
+      router.push('/')
     } catch (err: any) {
       // handled below by reading mutation.error
       console.error('register error', err)

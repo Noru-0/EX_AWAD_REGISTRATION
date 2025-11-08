@@ -45,9 +45,9 @@ async function handleRegister(req, res) {
     );
     const user = result.rows[0];
     // optional: create a token and set cookie for immediate auth
-    const token = jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET, { expiresIn: '8h' });
-    res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'lax', maxAge: 8 * 60 * 60 * 1000, path: '/' })
-    res.status(201).json({ user });
+  // Do NOT auto-login on registration. Return created user and require an explicit login.
+  // (Removing the cookie set here prevents automatic authentication immediately after register.)
+  res.status(201).json({ user });
   } catch (err) {
     console.error(err);
     if (err.code === '23505') {
