@@ -5,7 +5,7 @@ services:
     branch: master
     plan: free
     # Single-service monorepo build: install deps and build the Next frontend, then install backend deps
-    buildCommand: "npm ci && npm run build && cd backend && npm ci"
+    buildCommand: "npm --prefix frontend ci && npm --prefix frontend run build"
     # Start both processes in one container. Backend will listen on port 4000, frontend (Next) will listen on the Render-assigned $PORT.
     startCommand: "npm run start"
     instanceType: "starter"

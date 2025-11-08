@@ -3,9 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "install:all": "(cd frontend && npm ci) && (cd backend && npm ci)",
-    "build": "cd frontend && npm ci && npm run build",
-    "start": "concurrently \"cd backend && PORT=4000 npm start\" \"cd frontend && npm run start -p $PORT\""
+    "install:all": "npm --prefix frontend install --legacy-peer-deps && npm --prefix backend install --legacy-peer-deps",
+    "build:frontend": "npm --prefix frontend install --legacy-peer-deps && npm --prefix frontend run build",
+    "start:backend": "npm --prefix backend install --legacy-peer-deps && npm --prefix backend run start",
+    "start:frontend": "npm --prefix frontend run start -- -p $PORT",
+    "start": "npm run build:frontend && concurrently \"npm run start:backend\" \"npm run start:frontend\""
   },
   "dependencies": {
     "concurrently": "^8.2.0"
